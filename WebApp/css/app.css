@@ -1,0 +1,65 @@
+html, body {
+  height: 100%;
+}
+
+div.container {
+  width: 740px;
+}
+
+#voximplant_container {
+  width: 650px !important;
+  height: 240px !important;
+  margin: 20px auto;
+}
+
+#log {
+  margin: 20px;
+  text-align: left;
+  font-size: 70%;
+  font-family: Monospace;
+}
+
+#controls {      
+  width: 650px;
+  margin: 0 auto;
+}
+
+#controls div.input-group {
+  float: none;
+  width: 320px;
+  margin: 0 auto;
+  margin-bottom: 5px;
+}
+
+#controls button {
+  float: none;
+  width: 320px;
+}
+
+#voximplantlocalvideo {
+  float: left;
+  width: 320px;
+  height: 240px;
+}
+
+.vertical-center {
+  height:100%;
+  width:100%;
+
+  text-align: center;  /* align the inline(-block) elements horizontally */
+  font: 0/0 a;         /* remove the gap between inline(-block) elements */
+}
+
+.vertical-center:before {    /* create a full-height inline block pseudo=element */
+  content: ' ';
+  display: inline-block;
+  vertical-align: middle;  /* vertical alignment of the inline element */
+  height: 100%;
+}
+
+.vertical-center > .container {
+  max-width: 100%;
+  display: inline-block;
+  vertical-align: middle;  /* vertical alignment of the inline element */
+  font: 16px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;        /* <-- reset the font property */
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VoxImplant Audio Conference Client Demo</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-dialog.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-dialog.js"></script>
+    <script type="text/javascript" src="//cdn.voximplant.com/voximplant.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>    
+    <script>
+
+      $(document).ready(function(){        
+        $('#controls button.btn-success').click(function(){
+          createCall();
+        });
+        $('#fsButton').click(function(){
+          fullScreenmode(true);
+        });
+        if (showLog) $('#log').removeClass('hidden');
+      });
+
+    </script>
+  </head>
+  <body>
+  <div class="jumbotron vertical-center">
+    <div class="container">
+      <div id="container" class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">VoxImplant Video Chat</h3>
+        </div>
+        <div id="content" class="panel-body">
+          <div id="voximplant_container"></div>
+          <div id="controls" style="display:none">
+            <div class="input-group">
+              <span class="input-group-addon">@</span>
+              <input id="phonenum" type="text" class="form-control" placeholder="Username">
+            </div>
+            <div class="btn-group btn-group-justified">
+              <div class="btn-group">
+                <button type="button" class="btn btn-success" id="callButton">Call</button>
+                <button type="button" class="btn btn-default" id="fsButton">Enter fullscreen</button>
+              </div>
+            </div>
+          </div>
+          <div id="log" class="well hidden">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
