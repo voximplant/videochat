@@ -1,7 +1,7 @@
 1 on 1 Video Chat
 =========
 
-![Video Chat Interface](http://habrastorage.org/files/955/871/5bd/9558715bd2c341e0ab9be24676f065c9.png "Video Chat")
+![Video Chat Interface](http://habrastorage.org/files/2b2/f90/3b4/2b2f903b4b724fbaafb3a8b4edaed66a.png "Video Chat")
 
 This project contains [VoxEngine] scenario and web interface for 1 on 1 web video chat application. This README file describes how to use the provided files to launch the application. The only thing you need to start building your audio conferencing is VoxImplant developer account - you can get it for free at https://voximplant.com/sign-up
 
