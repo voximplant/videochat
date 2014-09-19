@@ -17,7 +17,7 @@ After you successfully created and activated your VoxImplant developer account y
 - Create at least two users in Users tab and assign them to videochat application
     
 ### Using the web application
-Just upload the files from the WebApp folder to your web server and open index.html#accname=YOUR_VOXIMPLANT_ACCOUNT_NAME in your browser, then you can log in using users credentials (your specified while created application users in VoxImplant Control Panel) and make a call between users. The app will automatically answer on incoming call so the connection should be established immediately after the call if everything is ok.
+Just upload the files from the WebApp folder to your web server and open index.html#accname=YOUR_VOXIMPLANT_ACCOUNT_NAME in your browser, then you can log in using users credentials (you specified while created the application users in VoxImplant Control Panel) and make a call between users. The app will automatically answer on incoming call so the connection should be established immediately after the call if everything is ok.
 
 Version
 ----
