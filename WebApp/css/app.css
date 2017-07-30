@@ -6,10 +6,16 @@ div.container {
   width: 740px;
 }
 
+div.panel-body {
+  display: flex;
+  flex-direction: column;
+}
+
 #voximplant_container {
-  width: 650px !important;
-  height: 240px !important;
+  width: 650px;
   margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 #log {
@@ -22,6 +28,8 @@ div.container {
 #controls {      
   width: 650px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #controls div.input-group {
@@ -33,7 +41,6 @@ div.container {
 
 #controls button {
   float: none;
-  width: 320px;
 }
 
 #voximplantlocalvideo {

@@ -30,26 +30,26 @@ function log(str) {
 // create VoxImplant instance
 var voxAPI = VoxImplant.getInstance();
 // assign handlers
-voxAPI.addEventListener(VoxImplant.Events.SDKReady, onSdkReady);
-voxAPI.addEventListener(VoxImplant.Events.ConnectionEstablished, onConnectionEstablished);
-voxAPI.addEventListener(VoxImplant.Events.ConnectionFailed, onConnectionFailed);
-voxAPI.addEventListener(VoxImplant.Events.ConnectionClosed, onConnectionClosed);
-voxAPI.addEventListener(VoxImplant.Events.AuthResult, onAuthResult);
-voxAPI.addEventListener(VoxImplant.Events.IncomingCall, onIncomingCall);
-voxAPI.addEventListener(VoxImplant.Events.MicAccessResult, onMicAccessResult);
-voxAPI.addEventListener(VoxImplant.Events.SourcesInfoUpdated, onSourcesInfoUpdated);
+voxAPI.on(VoxImplant.Events.SDKReady, onSdkReady);
+voxAPI.on(VoxImplant.Events.ConnectionEstablished, onConnectionEstablished);
+voxAPI.on(VoxImplant.Events.ConnectionFailed, onConnectionFailed);
+voxAPI.on(VoxImplant.Events.ConnectionClosed, onConnectionClosed);
+voxAPI.on(VoxImplant.Events.AuthResult, onAuthResult);
+voxAPI.on(VoxImplant.Events.IncomingCall, onIncomingCall);
+voxAPI.on(VoxImplant.Events.MicAccessResult, onMicAccessResult);
+voxAPI.on(VoxImplant.Events.SourcesInfoUpdated, onSourcesInfoUpdated);
  
 // initialize SDK
 try {
   voxAPI.init({ 
-    useFlashOnly: mode=='flash'?true:false, // force Flash mode
     micRequired: true, // force microphone/camera access request
     videoSupport: true, // enable video support 
     progressTone: true, // play progress tone
-    swfContainer: 'voximplant_container' // Flash movie will be loaded in the specified container
+    localVideoContainerId: "voximplant_container", // element id for local video from camera or screen sharing
+    remoteVideoContainerId: "voximplant_container"
   });
 } catch(e) {
-  if (e.message == "OLD_FLASH_VERSION") alert("Please update your Flash Player to version 11.3 or higher");
+  log(e);
 }
 
 // SDK ready - functions can be called now
@@ -134,16 +134,7 @@ function onAuthResult(e) {
     var title = $('.panel-title').html() + ': logged in as ' + username;
     $('.panel-title').html(title);
     $('#controls').slideDown();
-    showLocalVideo(true);
-    if (mode == 'flash') {
-      // Camera settings            
-      voxAPI.setLocalVideoSize(320, 240);
-      voxAPI.setVideoSettings({"profile": "baseline", "level":"2.1", "width": "320", "height": "240", "fps": "25", "bandwidth": "65536", "quality": "75", "keyframeInterval": "40" });
-    } else {
-      // Move local video from camera to container
-      $('#voximplantlocalvideo').appendTo('#voximplant_container');
-      $('#voximplantlocalvideo')[0].play();
-    }          
+    showLocalVideo(true);      
   } else {
     // Wrong username or password
     if (!$('div.alert.alert-danger').length) $('#authForm').prepend('<div class="alert alert-danger" role="alert">Wrong username or password was specified</div>');
@@ -151,34 +142,38 @@ function onAuthResult(e) {
   }
 }
 
+// Call's media element created
+function onMediaElement(e) {
+  // For WebRTC just using JS/CSS for transformation
+  $video = $(e.element);
+  $video.appendTo('#voximplant_container');
+  $video.css('margin-left', '10px').css('width', '320px').css('height', '240px').css('float', 'left');
+  $video[0].play();
+}
+
+function onLocalVideoStream(e) {
+  console.log("LOCAL VIDEO STREAM");
+  console.log(e);
+}
+
 // Call connected
 function onCallConnected(e) {          
   log("CallConnected: "+currentCall.id());
   if ($('#cancelButton').length) {
     $('#cancelButton').html('Disconnect');
-  } else {
-    $('#callButton').replaceWith('<button type="button" class="btn btn-danger" id="cancelButton">Disconnect</button>');
+    $('<button type="button" class="btn btn-default" id="shareButton">Share Screen</button>').insertAfter("#cancelButton");
+  } else {    
+    $('#callButton').replaceWith('<button type="button" class="btn btn-danger" id="cancelButton">Disconnect</button>');    
+    $('<button type="button" class="btn btn-default" id="shareButton">Share Screen</button>').insertAfter("#cancelButton");
     $('#cancelButton').click(function() {
       currentCall.hangup();
     }); 
   }
-  if (mode == 'flash') {
-    setTimeout(function() {
-      sendVideo(true);
-      showRemoteVideo(true);
-      // For Flash WebSDK function call is required
-      currentCall.setRemoteVideoSize(320, 240);
-      currentCall.setRemoteVideoPosition(330, 0);
-    }, 1000);
-  } else {
-    sendVideo(true);
-    showRemoteVideo(true);
-    // For WebRTC just using JS/CSS for transformation
-    $video = $(document.getElementById(currentCall.getVideoElementId()));
-    $video.appendTo('#voximplant_container');
-    $video.css('margin-left', '10px').css('width', '320px').css('height', '240px').css('float', 'left');
-    $video[0].play();
-  }
+  $('#shareButton').click(function() {
+    currentCall.shareScreen(true);
+  });
+  sendVideo(true);
+  showRemoteVideo(true);  
 }
 
 // Call disconnected
@@ -186,7 +181,7 @@ function onCallDisconnected(e) {
   log("CallDisconnected: "+currentCall.id()+" Call state: "+currentCall.state());
   currentCall = null;
   $('#cancelButton').replaceWith('<button type="button" class="btn btn-success" id="callButton">Call</button>');
-  $('#cancelButton').remove();
+  $('#cancelButton, #shareButton').remove();
   $('#callButton').click(function() {
     createCall();
   });
@@ -225,12 +220,14 @@ function onMicAccessResult(e) {
 function onIncomingCall(e) {
   currentCall = e.call;
   // Add handlers
-  currentCall.addEventListener(VoxImplant.CallEvents.Connected, onCallConnected);
-  currentCall.addEventListener(VoxImplant.CallEvents.Disconnected, onCallDisconnected);
-  currentCall.addEventListener(VoxImplant.CallEvents.Failed, onCallFailed);
+  currentCall.on(VoxImplant.CallEvents.Connected, onCallConnected);
+  currentCall.on(VoxImplant.CallEvents.Disconnected, onCallDisconnected);
+  currentCall.on(VoxImplant.CallEvents.Failed, onCallFailed);
+  currentCall.on(VoxImplant.CallEvents.MediaElementCreated, onMediaElement);
+  currentCall.on(VoxImplant.CallEvents.LocalVideoStreamAdded, onLocalVideoStream);
   log("Incoming call from: "+currentCall.number());
   // Answer automatically
-  currentCall.answer();
+  currentCall.answer(null, {}, { receiveVideo: true, sendVideo: true });
 }
 
 // Progress tone play start
@@ -251,10 +248,16 @@ function createCall() {
     currentCall.hangup();
   });
   log("Calling to "+document.getElementById('phonenum').value);
-  outboundCall = currentCall = voxAPI.call(document.getElementById('phonenum').value, true, "TEST CUSTOM DATA", {"X-DirectCall": "true"});
-  currentCall.addEventListener(VoxImplant.CallEvents.Connected, onCallConnected);
-  currentCall.addEventListener(VoxImplant.CallEvents.Disconnected, onCallDisconnected);
-  currentCall.addEventListener(VoxImplant.CallEvents.Failed, onCallFailed);
+  outboundCall = currentCall = voxAPI.call(
+    document.getElementById('phonenum').value, 
+    { receiveVideo: true, sendVideo: true }, 
+    "TEST CUSTOM DATA"
+  );
+  currentCall.on(VoxImplant.CallEvents.Connected, onCallConnected);
+  currentCall.on(VoxImplant.CallEvents.Disconnected, onCallDisconnected);
+  currentCall.on(VoxImplant.CallEvents.Failed, onCallFailed);
+  currentCall.on(VoxImplant.CallEvents.MediaElementCreated, onMediaElement);
+  currentCall.on(VoxImplant.CallEvents.LocalVideoStreamAdded, onLocalVideoStream);
 }
 
 // Disconnect current call
@@ -314,7 +317,5 @@ function fullScreenmode(flag) {
         elem.webkitRequestFullscreen();
       }
     }
-  } else {
-    // enable FullScreen in Flash  mode 
   }
 }
