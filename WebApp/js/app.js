@@ -159,6 +159,10 @@ function onLocalVideoStream(e) {
     $('#shareButton').html('Stop Sharing');
     $('#shareButton').off('click').click(function() {
       currentCall.stopSharingScreen();
+      $('#shareButton').html('Share Screen');
+      $('#shareButton').off('click').click(function() {
+        currentCall.shareScreen(true);
+      });
     });
   }
 }
