@@ -151,9 +151,16 @@ function onMediaElement(e) {
   $video[0].play();
 }
 
+// Video stream from local screen sharing
 function onLocalVideoStream(e) {
   console.log("LOCAL VIDEO STREAM");
   console.log(e);
+  if (e.type == "sharing") {
+    $('#shareButton').html('Stop Sharing');
+    $('#shareButton').off('click').click(function() {
+      currentCall.stopSharingScreen();
+    });
+  }
 }
 
 // Call connected
