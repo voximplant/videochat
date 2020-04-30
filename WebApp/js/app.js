@@ -260,7 +260,7 @@ function createCall() {
   });
   log("Calling to "+document.getElementById('phonenum').value);
   outboundCall = currentCall = voxAPI.call({
-    nuber: document.getElementById('phonenum').value, 
+    number: document.getElementById('phonenum').value, 
     video: { receiveVideo: true, sendVideo: true }, 
     customData: "TEST CUSTOM DATA"
 });
