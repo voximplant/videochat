@@ -259,11 +259,11 @@ function createCall() {
     currentCall.hangup();
   });
   log("Calling to "+document.getElementById('phonenum').value);
-  outboundCall = currentCall = voxAPI.call(
-    document.getElementById('phonenum').value, 
-    { receiveVideo: true, sendVideo: true }, 
-    "TEST CUSTOM DATA"
-  );
+  outboundCall = currentCall = voxAPI.call({
+    number: document.getElementById('phonenum').value, 
+    video: { receiveVideo: true, sendVideo: true }, 
+    customData: "TEST CUSTOM DATA"
+});
   currentCall.on(VoxImplant.CallEvents.Connected, onCallConnected);
   currentCall.on(VoxImplant.CallEvents.Disconnected, onCallDisconnected);
   currentCall.on(VoxImplant.CallEvents.Failed, onCallFailed);
