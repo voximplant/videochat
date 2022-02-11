@@ -319,12 +319,6 @@ function showLocalVideo(flag) {
   });
 }
 
-// Show/hide remote video
-// @deprecated
-// function showRemoteVideo(flag) {
-//   currentCall.showRemoteVideo(flag);
-// }
-
 // Start/stop sending video
 function sendVideo(flag) {
   currentCall.sendVideo(flag);
